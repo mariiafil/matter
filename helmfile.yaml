@@ -1,0 +1,55 @@
+repositories:
+  - name: bndigital
+    url: https://dcr.bndigital.dev/chartrepo/library
+
+helmDefaults:
+  createNamespace: true
+  cleanupOnFail: true
+
+releases:
+  - name: '{{ requiredEnv "APP_NAME" }}-website'
+    namespace: '{{ requiredEnv "APP_ENV" }}'
+    chart: bndigital/app
+    version: 1.2.10
+    values:
+      - app:
+          name: '{{ requiredEnv "APP_NAME" }}'
+        image:
+          registry:
+            url: '{{ requiredEnv "DOCKER_REGISTRY" }}/{{ requiredEnv "APP_NAME" }}'
+          repository: 'website'
+          tag: '{{ env "APP_VERSION" | default "latest" }}'
+        vcs:
+          repository: '{{ requiredEnv "GITHUB_REPOSITORY" }}'
+          ref: '{{ requiredEnv "GITHUB_REF_NAME" }}'
+          commit: '{{ requiredEnv "GITHUB_SHA" }}'
+        serviceAccount:
+          name: bndigital-app
+        ingress:
+          host: '{{ requiredEnv "DOMAIN" }}'
+          proxy:
+            paths:
+              - implementation: 'strapi'
+                service:
+                  name: '{{ requiredEnv "APP_NAME" }}-cms-app'
+
+  - name: '{{ requiredEnv "APP_NAME" }}-cms'
+    namespace: '{{ requiredEnv "APP_ENV" }}'
+    chart: bndigital/app
+    version: 1.2.10
+    values:
+      - app:
+          name: '{{ requiredEnv "APP_NAME" }}'
+        image:
+          registry:
+            url: '{{ requiredEnv "DOCKER_REGISTRY" }}/{{ requiredEnv "APP_NAME" }}'
+          repository: 'cms'
+          tag: '{{ env "APP_VERSION" | default "latest" }}'
+        vcs:
+          repository: '{{ requiredEnv "GITHUB_REPOSITORY" }}'
+          ref: '{{ requiredEnv "GITHUB_REF_NAME" }}'
+          commit: '{{ requiredEnv "GITHUB_SHA" }}'
+        healthcheck:
+          path: /graphql
+        serviceAccount:
+          name: bndigital-app

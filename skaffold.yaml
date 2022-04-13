@@ -1,0 +1,23 @@
+# nonk8s
+apiVersion: skaffold/v2beta27
+kind: Config
+build:
+  local:
+    concurrency: 0
+    useBuildkit: true
+  artifacts:
+    - image: cms
+      context: packages/cms
+    - image: website
+      context: packages/website
+profiles:
+  - name: staging
+    build:
+      tagPolicy:
+        sha256: {}
+  - name: production
+    build:
+      tagPolicy:
+        gitCommit:
+          variant: Tags
+          ignoreChanges: true

@@ -1,0 +1,64 @@
+{
+  "name": "app",
+  "description": "Includes all required tools and packages to bootstrap full-stack app development using NodeJS stack",
+  "version": "1.0.0",
+  "private": true,
+  "license": "proprietary",
+  "maintainers": [
+    {
+      "name": "BN Enginseer",
+      "email": "dev@bndigital.co",
+      "url": "https://github.com/bn-enginseer"
+    }
+  ],
+  "author": {
+    "name": "Vlad Volkov",
+    "email": "vlad.volkov@bndigital.co",
+    "url": "https://github.com/vladyslavvolkov"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,less,graphql}": [
+      "yarn prettier --write"
+    ],
+    "*.{js,jsx,ts,tsx}": [
+      "yarn eslint --fix"
+    ],
+    "*.less": [
+      "yarn stylelint --fix"
+    ]
+  },
+  "prettier": "@bn-digital/prettier-config",
+  "stylelint": {
+    "extends": "@bn-digital/stylelint-config"
+  },
+  "eslintConfig": {
+    "extends": "@bn-digital/eslint-config"
+  },
+  "devDependencies": {
+    "@bn-digital/commitlint-config": "^1.1.1",
+    "@bn-digital/eslint-config": "^1.19.1",
+    "@bn-digital/graphql-config": "^1.0.7",
+    "@bn-digital/prettier-config": "^1.13.3",
+    "@bn-digital/stylelint-config": "^1.13.5",
+    "concurrently": "^7.0.0",
+    "lint-staged": "^12.3.4",
+    "typescript": "^4.5.5"
+  },
+  "scripts": {
+    "prettier": "node_modules/.bin/prettier",
+    "stylelint": "node_modules/.bin/stylelint",
+    "eslint": "node_modules/.bin/eslint",
+    "graphql-codegen": "node_modules/.bin/graphql-codegen",
+    "generate": "yarn graphql-codegen --watch",
+    "cms": "yarn workspace @app/cms run start",
+    "website": "yarn workspace @app/website run start",
+    "start": "concurrently 'yarn:website' 'yarn:cms' 'yarn:generate'",
+    "build": "yarn workspaces foreach run build",
+    "fix": "yarn prettier --write packages/*/src && yarn eslint --fix packages/*/src && yarn stylelint --fix packages/*/src/**/*.less",
+    "lint": "yarn prettier --check packages/*/src && yarn eslint packages/*/src && yarn stylelint packages/*/src/**/*.less"
+  },
+  "packageManager": "yarn@3.1.1"
+}

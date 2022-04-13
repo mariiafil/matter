@@ -1,0 +1,12 @@
+query me {
+  me {
+    email
+    createdAt
+    updatedAt
+    customer {
+      data {
+        id
+      }
+    }
+  }
+}

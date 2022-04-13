@@ -1,0 +1,32 @@
+schema: packages/cms/src/graphql/schema.graphqls
+documents:
+  - packages/*/src/graphql/*/*.graphql
+config:
+  scalars:
+    Upload: unknown
+    Date: String
+    Time: String
+    JSON: Record<string, Object|Array|String|Number|Boolean|null|undefined>
+    Long: Number
+    DateTime: Date
+generates:
+  packages/website/src/graphql/index.tsx:
+    config:
+      skipTypename: true
+      dedupeFragments: true
+    plugins:
+      - typescript-operations:
+          preResolveTypes: true
+      - typescript-react-apollo:
+          withComponent: true
+          withHooks: true
+          withResultType: true
+  packages/website/src/types/graphql.d.ts:
+    config:
+      noExport: true
+      skipTypename: true
+    plugins:
+      - typescript:
+          enumsAsTypes: true
+      - typescript-operations:
+          preResolveTypes: true

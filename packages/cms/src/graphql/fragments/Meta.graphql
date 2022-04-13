@@ -1,0 +1,8 @@
+fragment Seo on ComponentSharedSeo {
+  id
+  canonicalURL
+  keywords
+  metaTitle
+  metaViewport
+  metaDescription
+}
